@@ -6,22 +6,29 @@ function getApiBase(): string {
   return process.env.NEXT_PUBLIC_API_URL?.trim() || "";
 }
 
-// Retry fetch when backend returns HTML (Render cold start "spinning up" page)
-async function fetchApi<T>(url: string, maxRetries = 3): Promise<{ status: number; data: T }> {
+// Retry fetch when backend returns HTML (Render cold start) or connection fails.
+// Render free tier cold start can take 30-60 seconds.
+async function fetchApi<T>(url: string, maxRetries = 5): Promise<{ status: number; data: T }> {
+  const delays = [5, 10, 15, 20, 25]; // seconds between retries (total ~75s max)
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const res = await fetch(url);
-    const text = await res.text();
-    const isJson = res.headers.get("content-type")?.includes("application/json") ?? text.trim().startsWith("{");
-    if (isJson) {
-      const json = JSON.parse(text) as T;
-      return { status: res.status, data: json };
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60000); // 60s per request
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      const text = await res.text();
+      const isJson = res.headers.get("content-type")?.includes("application/json") ?? text.trim().startsWith("{");
+      if (isJson) {
+        const json = JSON.parse(text) as T;
+        return { status: res.status, data: json };
+      }
+    } catch {
+      // Timeout, connection refused, etc. - retry
     }
-    // HTML = cold start page, retry after delay
     if (attempt < maxRetries) {
-      const delay = attempt * 2000; // 2s, 4s, 6s
-      await new Promise((r) => setTimeout(r, delay));
+      await new Promise((r) => setTimeout(r, (delays[attempt - 1] ?? 10) * 1000));
     } else {
-      throw new Error("Backend is starting up. Please refresh in a moment.");
+      throw new Error("Backend is starting up. Please wait a minute and refresh.");
     }
   }
   throw new Error("Backend unavailable");
