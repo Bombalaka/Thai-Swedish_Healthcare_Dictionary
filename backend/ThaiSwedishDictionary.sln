@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9A709D77-56C8-4FB8-8087-FCF9A8342E04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiSwedishDictionary.Domain", "src\ThaiSwedishDictionary.Domain\ThaiSwedishDictionary.Domain.csproj", "{AF2991C6-EF2B-46D2-811B-9979CD330CCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiSwedishDictionary.Application", "src\ThaiSwedishDictionary.Application\ThaiSwedishDictionary.Application.csproj", "{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiSwedishDictionary.Infrastructure", "src\ThaiSwedishDictionary.Infrastructure\ThaiSwedishDictionary.Infrastructure.csproj", "{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThaiSwedishDictionary.Api", "src\ThaiSwedishDictionary.Api\ThaiSwedishDictionary.Api.csproj", "{59B1D535-7DFE-4E43-B397-E287C62A64BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF2991C6-EF2B-46D2-811B-9979CD330CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF2991C6-EF2B-46D2-811B-9979CD330CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF2991C6-EF2B-46D2-811B-9979CD330CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF2991C6-EF2B-46D2-811B-9979CD330CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59B1D535-7DFE-4E43-B397-E287C62A64BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59B1D535-7DFE-4E43-B397-E287C62A64BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59B1D535-7DFE-4E43-B397-E287C62A64BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59B1D535-7DFE-4E43-B397-E287C62A64BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AF2991C6-EF2B-46D2-811B-9979CD330CCA} = {9A709D77-56C8-4FB8-8087-FCF9A8342E04}
+		{063C0EF7-3F7D-4120-B026-7A1C8CC5C8AE} = {9A709D77-56C8-4FB8-8087-FCF9A8342E04}
+		{CF9F8F84-3781-4919-8ED9-7E173F8C7BBB} = {9A709D77-56C8-4FB8-8087-FCF9A8342E04}
+		{59B1D535-7DFE-4E43-B397-E287C62A64BE} = {9A709D77-56C8-4FB8-8087-FCF9A8342E04}
+	EndGlobalSection
+EndGlobal

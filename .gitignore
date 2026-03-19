@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+bin/
+obj/
+
+# Environment
+.env
+.env.local
+.env.production.local
+.env.*.local
+.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# .NET
+*.user
+*.suo
+*.cache
+project.lock.json
+packages/
+
+
+
+# Developer documentation
+DEVELOPER.md
+
+# Future documentation
+FUTURE.md
