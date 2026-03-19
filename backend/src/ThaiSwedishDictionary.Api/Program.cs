@@ -15,8 +15,17 @@ if (File.Exists(envPath))
 else
     Env.TraversePath().Load();
 
-// If connection string not set, build from POSTGRES_* env vars (from .env) before config loads
-if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")))
+// Build connection string: prefer NEON_* (avoids URL parsing issues), else ConnectionStrings__DefaultConnection, else POSTGRES_*
+var neonHost = Environment.GetEnvironmentVariable("NEON_HOST");
+var neonDb = Environment.GetEnvironmentVariable("NEON_DATABASE") ?? "neondb";
+var neonUser = Environment.GetEnvironmentVariable("NEON_USER");
+var neonPassword = Environment.GetEnvironmentVariable("NEON_PASSWORD");
+if (!string.IsNullOrEmpty(neonHost) && !string.IsNullOrEmpty(neonUser) && !string.IsNullOrEmpty(neonPassword))
+{
+    Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
+        $"Host={neonHost};Port=5432;Database={neonDb};Username={neonUser};Password={neonPassword};SSL Mode=Require");
+}
+else if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")))
 {
     var pgUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "postgres";
     var pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
