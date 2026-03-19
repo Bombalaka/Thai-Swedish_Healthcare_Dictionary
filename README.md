@@ -27,4 +27,7 @@ Swedish → Thai dictionary for healthcare workers and medical translators. Heal
 
 ---
 
-*Setup and deployment instructions are in [DEVELOPER.md](DEVELOPER.md).*
+## DEMO 
+
+https://github.com/user-attachments/assets/7763a58d-6e6d-4f89-85df-cf96c8dfd511
+
