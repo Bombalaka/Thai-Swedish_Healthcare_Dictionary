@@ -6,6 +6,27 @@ function getApiBase(): string {
   return process.env.NEXT_PUBLIC_API_URL?.trim() || "";
 }
 
+// Retry fetch when backend returns HTML (Render cold start "spinning up" page)
+async function fetchApi<T>(url: string, maxRetries = 3): Promise<{ status: number; data: T }> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const res = await fetch(url);
+    const text = await res.text();
+    const isJson = res.headers.get("content-type")?.includes("application/json") ?? text.trim().startsWith("{");
+    if (isJson) {
+      const json = JSON.parse(text) as T;
+      return { status: res.status, data: json };
+    }
+    // HTML = cold start page, retry after delay
+    if (attempt < maxRetries) {
+      const delay = attempt * 2000; // 2s, 4s, 6s
+      await new Promise((r) => setTimeout(r, delay));
+    } else {
+      throw new Error("Backend is starting up. Please refresh in a moment.");
+    }
+  }
+  throw new Error("Backend unavailable");
+}
+
 export interface ApiResponse<T> {
   data: T;
   meta?: { total: number };
@@ -45,44 +66,38 @@ export interface Source {
 export async function searchTerms(q: string, categoryId?: number): Promise<Term[]> {
   const params = new URLSearchParams({ q });
   if (categoryId != null) params.set("category_id", String(categoryId));
-  const res = await fetch(`${getApiBase()}/api/terms?${params}`);
-  const json: ApiResponse<Term[]> = await res.json();
+  const { data: json } = await fetchApi<ApiResponse<Term[]>>(`${getApiBase()}/api/terms?${params}`);
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? [];
 }
 
 export async function getTerm(id: number): Promise<Term | null> {
-  const res = await fetch(`${getApiBase()}/api/terms/${id}`);
-  if (res.status === 404) return null;
-  const json: ApiResponse<Term> = await res.json();
+  const { status, data: json } = await fetchApi<ApiResponse<Term>>(`${getApiBase()}/api/terms/${id}`);
+  if (status === 404) return null;
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? null;
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const res = await fetch(`${getApiBase()}/api/categories`);
-  const json: ApiResponse<Category[]> = await res.json();
+  const { data: json } = await fetchApi<ApiResponse<Category[]>>(`${getApiBase()}/api/categories`);
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? [];
 }
 
 export async function getCategoryTerms(categoryId: number): Promise<Term[]> {
-  const res = await fetch(`${getApiBase()}/api/categories/${categoryId}/terms`);
-  const json: ApiResponse<Term[]> = await res.json();
+  const { data: json } = await fetchApi<ApiResponse<Term[]>>(`${getApiBase()}/api/categories/${categoryId}/terms`);
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? [];
 }
 
 export async function getSources(): Promise<Source[]> {
-  const res = await fetch(`${getApiBase()}/api/sources`);
-  const json: ApiResponse<Source[]> = await res.json();
+  const { data: json } = await fetchApi<ApiResponse<Source[]>>(`${getApiBase()}/api/sources`);
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? [];
 }
 
 export async function getRandomTerms(limit = 3): Promise<Term[]> {
-  const res = await fetch(`${getApiBase()}/api/terms/random?limit=${limit}`);
-  const json: ApiResponse<Term[]> = await res.json();
+  const { data: json } = await fetchApi<ApiResponse<Term[]>>(`${getApiBase()}/api/terms/random?limit=${limit}`);
   if (json.errors) throw new Error(json.errors.join(", "));
   return json.data ?? [];
 }
