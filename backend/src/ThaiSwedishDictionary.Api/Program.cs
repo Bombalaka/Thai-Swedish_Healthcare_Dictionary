@@ -99,13 +99,16 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseHttpsRedirection();
 
-// Root route so ngrok/visitors see something instead of 404
-app.MapGet("/", () => Results.Json(new
+// Root route – supports GET and HEAD (UptimeRobot uses HEAD by default)
+app.MapMethods("/", new[] { "GET", "HEAD" }, () => Results.Json(new
 {
     message = "Thai-Swedish Dictionary API",
     swagger = "/swagger",
     api = new[] { "/api/terms", "/api/categories", "/api/sources" }
 }));
+
+// Health check for monitoring – GET and HEAD
+app.MapMethods("/health", new[] { "GET", "HEAD" }, () => Results.Ok());
 
 app.MapControllers();
 
