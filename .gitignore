@@ -42,6 +42,7 @@ packages/
 
 # Developer documentation
 DEVELOPER.md
+docs/DEPLOYMENT_TROUBLESHOOTING.md
 
 # Future documentation
 FUTURE.md

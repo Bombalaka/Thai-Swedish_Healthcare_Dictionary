@@ -15,27 +15,7 @@ if (File.Exists(envPath))
 else
     Env.TraversePath().Load();
 
-// Build connection string: prefer NEON_* (avoids URL parsing issues), else ConnectionStrings__DefaultConnection, else POSTGRES_*
-var neonHost = Environment.GetEnvironmentVariable("NEON_HOST");
-var neonDb = Environment.GetEnvironmentVariable("NEON_DATABASE") ?? "neondb";
-var neonUser = Environment.GetEnvironmentVariable("NEON_USER");
-var neonPassword = Environment.GetEnvironmentVariable("NEON_PASSWORD");
-if (!string.IsNullOrEmpty(neonHost) && !string.IsNullOrEmpty(neonUser) && !string.IsNullOrEmpty(neonPassword))
-{
-    Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
-        $"Host={neonHost};Port=5432;Database={neonDb};Username={neonUser};Password={neonPassword};SSL Mode=Require");
-}
-else if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")))
-{
-    var pgUser = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "postgres";
-    var pgPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
-    var pgDb = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "thai_swedish_dictionary";
-    if (!string.IsNullOrEmpty(pgPassword))
-    {
-        Environment.SetEnvironmentVariable("ConnectionStrings__DefaultConnection",
-            $"Host=localhost;Port=5433;Database={pgDb};Username={pgUser};Password={pgPassword}");
-    }
-}
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +32,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DictionaryDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // Automatically convert standard postgres:// URIs to .NET format
+    if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgres"))
+    {
+        var databaseUri = new Uri(connectionString);
+        var userInfo = databaseUri.UserInfo.Split(':');
+        connectionString = $"Host={databaseUri.Host};Port={(databaseUri.Port > 0 ? databaseUri.Port : 5432)};Database={databaseUri.LocalPath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    }
+
     options.UseNpgsql(connectionString);
 });
 
