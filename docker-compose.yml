@@ -1,8 +1,6 @@
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: yotaka99/thai-dict-api:latest
     container_name: thai-swedish-dict-api
     environment:
       - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
@@ -12,9 +10,7 @@ services:
     restart: always
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: yotaka99/thai-dict-web:latest
     container_name: thai-swedish-dict-web
     environment:
       - NEXT_PUBLIC_API_URL=http://${SERVER_IP:-localhost}:10000
