@@ -1,15 +1,26 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: thai-swedish-dict-db
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: thai-swedish-dict-api
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      POSTGRES_DB: thai_swedish_dictionary
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
-      - "5433:5432"
-    volumes:
-      - pg_dict_data:/var/lib/postgresql/data
+      - "10000:10000"
+    restart: always
 
-volumes:
-  pg_dict_data:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: thai-swedish-dict-web
+    environment:
+      - NEXT_PUBLIC_API_URL=http://${SERVER_IP:-localhost}:10000
+      - BACKEND_URL=http://backend:10000
+    ports:
+      - "80:3000"
+    restart: always
+    depends_on:
+      - backend
