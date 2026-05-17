@@ -1,0 +1,11 @@
+dictionary.yotakadev.com {
+    # Route API requests to the backend container
+    handle /api/* {
+        reverse_proxy backend:10000
+    }
+
+    # Route all other requests to the frontend container
+    handle {
+        reverse_proxy frontend:3000
+    }
+}
