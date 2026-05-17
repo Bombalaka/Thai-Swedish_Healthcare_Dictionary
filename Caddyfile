@@ -5,7 +5,7 @@ dictionary.yotakadev.com {
     }
 
     # Route Swagger UI to the backend container
-    handle /swagger/* {
+    handle /swagger* {
         reverse_proxy backend:10000
     }
 
